@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1117">
+  <title>SDragon AssetTracker - Quản Lý Tài Sản & Máy Móc Track Sheet</title>
+  <meta name="description" content="Hệ thống quản lý tài sản máy móc thiết bị công nghiệp, theo dõi lịch bảo dưỡng, track sheet nhật ký sửa chữa, tem nhãn QR code cho nhà máy sản xuất.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-dark">
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <!-- Application Root Layout -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="brand-header">
+        <div class="brand-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+            <path d="M7 8h2m2 0h6M7 12h4m2 0h4"/>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <span class="brand-title">SDragon Asset</span>
+          <span class="brand-subtitle">Track Sheet Pro v3.0</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <!-- Section 1: All Main Views (Always Accessible) -->
+        <div class="nav-section-title">ĐIỀU HƯỚNG MÀN HÌNH</div>
+        <button class="nav-item active" data-view="dashboard-view" id="navDashboardView" title="Xem tổng quan vận hành & sơ đồ hôm nay">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Tổng Quan Hệ Thống</span>
+        </button>
+
+        <button class="nav-item" data-view="sheet-view" id="navSheetView" title="Danh mục thiết bị máy móc">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+          <span>Danh Mục Máy Móc</span>
+          <span class="nav-badge" id="badgeTotalCount">0</span>
+        </button>
+
+        <button class="nav-item" data-view="kanban-view" id="navKanbanView" title="Xem trạng thái dạng thẻ Kanban">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="11" y="3" width="5" height="12" rx="1"/><rect x="19" y="3" width="5" height="8" rx="1"/></svg>
+          <span>Thẻ Kanban Thiết Bị</span>
+        </button>
+
+        <button class="nav-item" data-view="maintenance-view" id="navMaintenanceView" title="Lịch bảo dưỡng định kỳ & sửa chữa">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          <span>Lịch Trình Bảo Dưỡng</span>
+          <span class="nav-badge alert" id="badgeDueCount">0</span>
+        </button>
+
+        <button class="nav-item" data-view="inspection-history-view" id="navInspectionHistoryView" title="Nhật ký khám ca Track Sheet 10 hạng mục">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Lịch Sử Khám Ca (10 Mục)</span>
+          <span class="nav-badge" id="badgeInspectionCount">0</span>
+        </button>
+
+        <button class="nav-item" data-view="analytics-view" id="navAnalyticsView" title="Báo cáo thống kê chi phí & tỷ lệ sẵn sàng">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Thống Kê & Phân Tích</span>
+        </button>
+
+        <!-- Section 2: All Actions & Tools (Never hidden on phone/iPad) -->
+        <div class="nav-section-title">TÁC VỤ & TIỆN ÍCH NHANH</div>
+        <button class="nav-item nav-action-btn" id="btnSidebarAddAsset" title="Thêm máy móc mới vào hệ thống">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>+ Thêm Máy Móc Mới</span>
+        </button>
+
+        <button class="nav-item" id="btnSidebarScanQR" title="Quét mã QR để mở trực tiếp hồ sơ máy">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M7 17h.01M17 17h.01M7 7h.01M17 7h.01"/></svg>
+          <span>Quét Mã QR Thiết Bị</span>
+        </button>
+
+        <button class="nav-item" id="btnBatchQR" title="In tem nhãn QR code hàng loạt">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01"/></svg>
+          <span>In Tem Nhãn QR Code</span>
+        </button>
+
+        <button class="nav-item" id="btnExportImport" title="Xuất file Excel CSV hoặc sao lưu JSON">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Xuất / Nhập Dữ Liệu</span>
+        </button>
+
+        <!-- Section 3: Status Counters (Shows data even when header stats hidden on mobile/iPad) -->
+        <div class="nav-section-title">TRẠNG THÁI REAL-TIME HÔM NAY</div>
+        <div class="sidebar-status-box">
+          <div class="sidebar-status-item status-running" id="sidebarStatusRunning" title="Bấm để lọc máy đang chạy">
+            <span class="stat-dot"></span>
+            <span>Đang hoạt động:</span>
+            <strong id="sidebarCountRunning">0</strong>
+          </div>
+          <div class="sidebar-status-item status-maint" id="sidebarStatusMaint" title="Bấm để lọc máy bảo dưỡng">
+            <span class="stat-dot"></span>
+            <span>Bảo dưỡng / Sắp hạn:</span>
+            <strong id="sidebarCountMaint">0</strong>
+          </div>
+          <div class="sidebar-status-item status-down" id="sidebarStatusDown" title="Bấm để lọc máy sự cố">
+            <span class="stat-dot"></span>
+            <span>Sự cố dừng máy:</span>
+            <strong id="sidebarCountDown">0</strong>
+          </div>
+        </div>
+
+        <!-- Section 4: Account & Administration (Admin Only for user mgmt) -->
+        <div class="nav-section-title">TÀI KHOẢN & HỆ THỐNG</div>
+        <button class="nav-item" id="btnOpenUserManagement" style="display: none;" title="Chỉ Quản Trị Viên (Admin) mới có quyền truy cập">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>👑 Quản Lý Tài Khoản (Admin)</span>
+        </button>
+
+        <button class="nav-item" id="btnSidebarSwitchAccount" title="Chuyển đổi nhân sự / đổi tài khoản người dùng">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>👥 Chuyển Đổi Nhân Sự</span>
+        </button>
+
+        <button class="nav-item" id="btnSidebarThemeToggle" title="Chuyển chế độ giao diện Sáng / Tối">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <span>Chế Độ Sáng / Tối</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status-indicator">
+          <span class="pulse-dot"></span>
+          <div class="status-text">
+            <strong>Hệ thống sẵn sàng</strong>
+            <small>Local Storage Auto-Sync</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      
+      <!-- Top Action Bar -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="btn-icon mobile-menu-toggle" id="btnToggleSidebar" title="Mở / Đóng menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          
+          <div class="search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="globalSearchInput" placeholder="Tìm theo tên máy, mã số, model, vị trí xưởng... (phím tắt /)" autocomplete="off">
+            <button class="clear-search-btn" id="btnClearSearch" title="Xóa tìm kiếm">&times;</button>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Quick Filter Status Chips -->
+          <div class="header-quick-stats">
+            <div class="quick-stat-badge status-running" title="Số máy đang hoạt động bình thường">
+              <span class="stat-dot"></span>
+              <span class="stat-val" id="quickRunningCount">0</span> Đang chạy
+            </div>
+            <div class="quick-stat-badge status-maintenance" title="Số máy đang bảo trì định kỳ">
+              <span class="stat-dot"></span>
+              <span class="stat-val" id="quickMaintenanceCount">0</span> Bảo dưỡng
+            </div>
+            <div class="quick-stat-badge status-down" title="Số máy đang gặp sự cố / Dừng chuyền">
+              <span class="stat-dot"></span>
+              <span class="stat-val" id="quickDownCount">0</span> Sự cố
+            </div>
+          </div>
+
+          <!-- Add Asset Button -->
+          <!-- Quick QR Scan Button -->
+          <button class="btn btn-secondary btn-header-qr" id="btnHeaderScanQR" title="Quét mã QR để mở trực tiếp hồ sơ máy">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M7 17h.01M17 17h.01M7 7h.01M17 7h.01"/></svg>
+            <span>Quét QR</span>
+          </button>
+
+          <button class="btn btn-primary" id="btnOpenAddModal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>+ Thêm Máy Móc Mới</span>
+          </button>
+
+                    <!-- User Account Profile Widget -->
+          <div class="user-profile-widget" id="userProfileWidget" title="Nhấp để xem tài khoản & đổi người dùng">
+            <div class="user-avatar" id="userAvatarInitial">AD</div>
+            <div class="user-info-text">
+              <span class="user-name" id="userFullName">Quản Trị Viên</span>
+              <span class="role-badge admin" id="userRoleBadge">👑 Quản Trị Viên</span>
+            </div>
+            <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            
+            <!-- User Dropdown Menu -->
+            <div class="user-dropdown-menu" id="userDropdownMenu">
+              <div class="dropdown-header">
+                <strong>SDragon Auth Portal</strong>
+                <small>Phiên làm việc bảo mật</small>
+              </div>
+              <button class="dropdown-item" id="btnSwitchAccount">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                <span>Đổi Tài Khoản Đăng Nhập</span>
+              </button>
+              <button class="dropdown-item" id="btnOpenUserMgmtDropdown">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                <span>Danh Sách Người Dùng (Admin)</span>
+              </button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item logout" id="btnLogoutDropdown">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Đăng Xuất Khỏi Hệ Thống</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button class="btn-icon theme-toggle" id="btnThemeToggle" title="Chuyển chế độ Sáng / Tối">
+            <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        </div>
+            </header>
+
+      <!-- Real-Time Today Live Status & Flow Diagram -->
+      <section class="today-live-section" id="todayLiveSection">
+        <div class="today-live-header">
+          <div class="today-live-title-group">
+            <div class="live-pulse-indicator">
+              <span class="live-pulse-dot"></span>
+              <span class="live-pulse-text">REAL-TIME TODAY</span>
+            </div>
+            <h4>Sơ Đồ Vận Hành & Khám Máy Ngày Hôm Nay</h4>
+            <span class="today-date-badge" id="todayLiveDateBadge">Hôm nay</span>
+          </div>
+          <div class="today-live-actions">
+            <span class="today-sync-info" id="todayLiveSyncInfo">Đồng bộ tức thời</span>
+            <button class="btn btn-sm btn-secondary btn-today-filter" id="btnTodayViewChart" title="Xem biểu đồ so sánh chi tiết hôm nay">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              <span>Sơ Đồ Cột Hôm Nay</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="today-flow-grid">
+          <!-- Node 1: Running Machines -->
+          <div class="today-flow-node node-running" id="todayCardRun" title="Click để xem máy đang hoạt động">
+            <div class="node-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="node-content">
+              <span class="node-label">Máy Đang Hoạt Động</span>
+              <div class="node-val" id="todayNodeRun">0 máy</div>
+              <span class="node-sub" id="todayNodeRunSub">0% hoạt động tốt</span>
+            </div>
+            <div class="node-status-bar operational"></div>
+          </div>
+
+          <!-- Flow connector arrow -->
+          <div class="flow-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <!-- Node 2: Maintenance & Due -->
+          <div class="today-flow-node node-maint" id="todayCardMaint" title="Click để xem lịch bảo trì">
+            <div class="node-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="node-content">
+              <span class="node-label">Bảo Dưỡng & Đến Hạn</span>
+              <div class="node-val" id="todayNodeMaint">0 máy</div>
+              <span class="node-sub" id="todayNodeMaintSub">0 phiếu bảo dưỡng</span>
+            </div>
+            <div class="node-status-bar maintenance"></div>
+          </div>
+
+          <!-- Flow connector arrow -->
+          <div class="flow-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <!-- Node 3: Machine Down / Incident -->
+          <div class="today-flow-node node-down" id="todayCardDown" title="Click để xem máy đang gặp sự cố">
+            <div class="node-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="node-content">
+              <span class="node-label">Sự Cố Dừng Chuyền</span>
+              <div class="node-val" id="todayNodeDown">0 máy</div>
+              <span class="node-sub" id="todayNodeDownSub">0 sự cố dừng máy</span>
+            </div>
+            <div class="node-status-bar down"></div>
+          </div>
+
+          <!-- Flow connector arrow -->
+          <div class="flow-arrow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <!-- Node 4: Track Sheet Inspections Today -->
+          <div class="today-flow-node node-inspect" id="todayCardInspect" title="Click để xem nhật ký khám ca">
+            <div class="node-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <div class="node-content">
+              <span class="node-label">Khám Track Sheet Hôm Nay</span>
+              <div class="node-val" id="todayNodeInspect">0 lượt</div>
+              <span class="node-sub" id="todayNodeInspectSub">0 PASS / 0 NG hôm nay</span>
+            </div>
+            <div class="node-status-bar inspect"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Executive Metrics Cards -->
+      <section class="kpi-section" id="kpiSection">
+        <div class="kpi-card">
+          <div class="kpi-icon icon-asset">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-label">Tổng Số Máy Móc & Thiết Bị</span>
+            <div class="kpi-val-group">
+              <span class="kpi-value" id="kpiTotalAssets">0</span>
+              <span class="kpi-sub" id="kpiTotalValue">Tổng giá trị: 0 ₫</span>
+            </div>
+          </div>
+          <div class="kpi-trend positive" id="kpiAssetTrend">
+            <span>100% kiểm kê</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon icon-availability">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-label">Tỷ Lệ Sẵn Sàng (Availability)</span>
+            <div class="kpi-val-group">
+              <span class="kpi-value" id="kpiAvailabilityRate">0%</span>
+              <span class="kpi-sub" id="kpiAvailabilitySub">0/0 máy đang chạy</span>
+            </div>
+          </div>
+          <div class="kpi-gauge-bar">
+            <div class="gauge-fill" id="kpiAvailabilityGauge" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="kpi-card alert-card">
+          <div class="kpi-icon icon-due">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-label">Cảnh Báo Đến Hạn Bảo Dưỡng</span>
+            <div class="kpi-val-group">
+              <span class="kpi-value warning-color" id="kpiDueCount">0</span>
+              <span class="kpi-sub" id="kpiDueSub">Cần bảo dưỡng trong 7 ngày</span>
+            </div>
+          </div>
+          <button class="kpi-action-btn" id="btnFilterDue" title="Lọc các máy sắp đến hạn">Xem ngay &rarr;</button>
+        </div>
+
+        <div class="kpi-card danger-card">
+          <div class="kpi-icon icon-down">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="kpi-data">
+            <span class="kpi-label">Sự Cố / Đang Ngừng Máy</span>
+            <div class="kpi-val-group">
+              <span class="kpi-value danger-color" id="kpiDownCount">0</span>
+              <span class="kpi-sub" id="kpiDownSub">0 sự cố dừng chuyền</span>
+            </div>
+          </div>
+          <button class="kpi-action-btn danger" id="btnFilterDown" title="Lọc các máy gặp sự cố">Xem sự cố &rarr;</button>
+        </div>
+      </section>
+
+      <!-- View Container -->
+      <div class="view-content-wrapper">
+        
+        <!-- ================= VIEW 1: TRACK SHEET DATA TABLE ================= -->
+        <section class="app-view active" id="viewSheet">
+
+          <!-- Status Quick Filter Pills: Running vs Stopped/Fault Machines -->
+          <div class="status-quick-pills-bar">
+            <button type="button" class="btn-status-pill active" data-status="all" id="pillStatusAll">
+              <span class="pill-dot"></span>
+              <span>Tất Cả Thiết Bị (<span id="pillCountAll">16</span>)</span>
+            </button>
+            <button type="button" class="btn-status-pill pill-running" data-status="operational" id="pillStatusRunning">
+              <span class="pill-dot green"></span>
+              <span>🟢 Máy Đang Hoạt Động (<span id="pillCountRunning">12</span>)</span>
+            </button>
+            <button type="button" class="btn-status-pill pill-down" data-status="down" id="pillStatusDown">
+              <span class="pill-dot red"></span>
+              <span>🔴 Máy Dừng / Sự Cố (<span id="pillCountDown">1</span>)</span>
+            </button>
+            <button type="button" class="btn-status-pill pill-maint" data-status="maintenance" id="pillStatusMaint">
+              <span class="pill-dot amber"></span>
+              <span>🟡 Đang Bảo Dưỡng (<span id="pillCountMaint">1</span>)</span>
+            </button>
+            <button type="button" class="btn-status-pill pill-standby" data-status="standby" id="pillStatusStandby">
+              <span class="pill-dot blue"></span>
+              <span>⚪ Dự Phòng / Hiệu Chuẩn (<span id="pillCountStandby">2</span>)</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-primary" id="btnQuickAddAsset" style="margin-left: auto;" onclick="if(window.openAddAssetModal) window.openAddAssetModal(); else document.getElementById('btnOpenAddModal').click();" title="Thêm máy móc mới vào xưởng">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>➕ Thêm Máy Mới</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" id="btnClearAllAssetsPill" title="Xóa toàn bộ các máy để tự nhập từ đầu" style="color:var(--danger-color); border-color:rgba(239, 68, 68, 0.3);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>🗑️ Xóa Tất Cả Máy</span>
+            </button>
+          </div>
+          
+          <!-- Filter Controls Bar -->
+          <div class="filter-controls-bar">
+            <div class="filter-group">
+              <!-- Department Filter -->
+              <div class="select-wrapper">
+                <label for="filterDepartment">Phân xưởng:</label>
+                <select id="filterDepartment" class="custom-select">
+                  <option value="all">Tất cả phân xưởng</option>
+                  <option value="Xưởng Cơ Khí A">Xưởng Cơ Khí A</option>
+                  <option value="Xưởng Đúc Ép B">Xưởng Đúc Ép B</option>
+                  <option value="Xưởng SMT Điện Tử C">Xưởng SMT Điện Tử C</option>
+                  <option value="Xưởng Lắp Ráp & Đóng Gói D">Xưởng Lắp Ráp & Đóng Gói D</option>
+                  <option value="Phòng QC & Đo Lường">Phòng QC & Đo Lường</option>
+                  <option value="Trạm Cấp Nguồn & Phụ Trợ">Trạm Cấp Nguồn & Phụ Trợ</option>
+                </select>
+              </div>
+
+              <!-- Category Filter -->
+              <div class="select-wrapper">
+                <label for="filterCategory">Chủng loại:</label>
+                <select id="filterCategory" class="custom-select">
+                  <option value="all">Tất cả chủng loại</option>
+                  <option value="Máy Phay / Tiện CNC">Máy Phay / Tiện CNC</option>
+                  <option value="Cánh Tay Robot Công Nghiệp">Cánh Tay Robot Công Nghiệp</option>
+                  <option value="Máy Ép Nhựa Thủy Lực">Máy Ép Nhựa Thủy Lực</option>
+                  <option value="Dây Chuyền SMT Gắn Chip">Dây Chuyền SMT Gắn Chip</option>
+                  <option value="Máy Kiểm Tra Vision AI / AOI">Máy Kiểm Tra Vision AI / AOI</option>
+                  <option value="Máy Nén Khí Trục Vít">Máy Nén Khí Trục Vít</option>
+                  <option value="Băng Tải & Cấp Liệu Tự Động">Băng Tải & Cấp Liệu Tự Động</option>
+                </select>
+              </div>
+
+              <!-- Status Filter -->
+              <div class="select-wrapper">
+                <label for="filterStatus">Trạng thái:</label>
+                <select id="filterStatus" class="custom-select">
+                  <option value="all">Tất cả trạng thái</option>
+                  <option value="operational">🟢 Đang hoạt động (Running)</option>
+                  <option value="maintenance">🟡 Đang bảo trì (Maintenance)</option>
+                  <option value="down">🔴 Gặp sự cố (Down / Fault)</option>
+                  <option value="calibration">🟣 Chờ kiểm định / Hiệu chuẩn</option>
+                  <option value="standby">⚪ Máy dự phòng (Standby)</option>
+                </select>
+              </div>
+
+              <!-- Maintenance Due Filter -->
+              <div class="select-wrapper">
+                <label for="filterMaintenanceDue">Hạn bảo dưỡng:</label>
+                <select id="filterMaintenanceDue" class="custom-select">
+                  <option value="all">Tất cả chu kỳ</option>
+                  <option value="overdue">🚨 Đã quá hạn</option>
+                  <option value="due7">⚠️ Đến hạn trong 7 ngày</option>
+                  <option value="due30">📅 Đến hạn trong 30 ngày</option>
+                  <option value="ok">✅ Bình thường</option>
+                </select>
+              </div>
+
+              <!-- Track Sheet Shift Inspection Filter -->
+              <div class="select-wrapper">
+                <label for="filterInspection">Track Sheet ca:</label>
+                <select id="filterInspection" class="custom-select">
+                  <option value="all">Tất cả tình trạng ca</option>
+                  <option value="checked_pass">✅ Đã kiểm tra (10/10 Đạt)</option>
+                  <option value="not_checked">⚠️ Chưa kiểm tra ca hôm nay</option>
+                  <option value="has_issue">🚨 Phát hiện lỗi (Có mục NG)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Right Actions: Reset filters & view mode -->
+            <div class="filter-actions">
+              <button class="btn btn-secondary btn-sm" id="btnResetFilters" title="Đặt lại toàn bộ bộ lọc">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <span>Xóa bộ lọc</span>
+              </button>
+              
+              <div class="view-switch-btns">
+                <button class="btn-toggle active" id="btnViewTable" title="Chế độ bảng Sheet">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+                </button>
+                <button class="btn-toggle" id="btnViewCards" title="Chế độ thẻ lưới Grid">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bulk Selection Floating Toolbar -->
+          <div class="bulk-toolbar" id="bulkToolbar" style="display: none;">
+            <div class="bulk-count">
+              Đã chọn <strong id="bulkSelectedCount">0</strong> máy móc
+            </div>
+            <div class="bulk-actions-group">
+              <button class="btn btn-sm btn-secondary" id="btnBulkExportCSV">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Xuất CSV</span>
+              </button>
+              <button class="btn btn-sm btn-secondary" id="btnBulkPrintQR">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span>In Tem QR</span>
+              </button>
+              <button class="btn btn-sm btn-danger" id="btnBulkDelete">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                <span>Xóa</span>
+              </button>
+              <button class="btn-icon btn-sm" id="btnCancelBulk" title="Bỏ chọn">&times;</button>
+            </div>
+          </div>
+
+          <!-- Sheet Table Container -->
+          <div class="sheet-table-container">
+            <div class="table-responsive-scroll">
+              <table class="industrial-table" id="assetTrackTable">
+                <thead>
+                  <tr>
+                    <th class="th-checkbox">
+                      <input type="checkbox" id="selectAllCheckbox" title="Chọn tất cả">
+                    </th>
+                    <th class="th-sortable" data-sort="code">
+                      <span>Mã Tài Sản (Tag ID)</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-sortable" data-sort="name">
+                      <span>Tên Máy Móc / Thiết Bị</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-sortable" data-sort="department">
+                      <span>Phân Xưởng & Vị Trí</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-sortable" data-sort="status">
+                      <span>Trạng Thái</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-sortable" data-sort="checkSheet">
+                      <span>Kiểm Tra Track Sheet (10 Mục)</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-sortable" data-sort="nextDue">
+                      <span>Hạn Bảo Dưỡng Tiếp Theo</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-sortable" data-sort="operator">
+                      <span>Người Phụ Trách</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-sortable" data-sort="value">
+                      <span>Nguyên Giá (VNĐ)</span>
+                      <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-actions text-center">
+                      <span>Thao Tác</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="assetTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="tableEmptyState" style="display: none;">
+              <div class="empty-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              </div>
+              <h3 id="emptyStateTitle">Chưa có máy móc nào trong danh sách</h3>
+              <p id="emptyStateDesc">Đã xóa các máy do AI tự nạp. Bạn có thể tự thêm máy móc của xưởng mình ngay bây giờ.</p>
+              <div style="display:flex; gap:10px; justify-content:center; margin-top:14px; flex-wrap:wrap;">
+                <button class="btn btn-primary btn-sm" id="btnEmptyAddAsset" onclick="if(window.openAddAssetModal) window.openAddAssetModal(); else document.getElementById('btnOpenAddModal').click();">➕ Tự Thêm Máy Móc Mới</button>
+                <button class="btn btn-secondary btn-sm" id="btnEmptyReset">Xóa tất cả bộ lọc</button>
+              </div>
+            </div>
+
+            <!-- Table Footer Pagination & Info -->
+            <div class="table-footer">
+              <div class="table-info">
+                Hiển thị <strong id="showingCount">0</strong> / <span id="totalFilterCount">0</span> máy móc (Tổng kho: <span id="grandTotalCount">0</span>)
+              </div>
+              <div class="table-pagination">
+                <button class="btn-page" id="btnPrevPage" disabled title="Trang trước">&larr; Trước</button>
+                <div class="page-numbers" id="pageNumbersContainer">
+                  <span class="page-num active">1</span>
+                </div>
+                <button class="btn-page" id="btnNextPage" disabled title="Trang kế">Tiếp &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW 2: KANBAN CARDS ================= -->
+        <section class="app-view" id="viewKanban" style="display: none;">
+          <div class="kanban-board-container" id="kanbanBoard">
+            <!-- Columns: Operational, Maintenance, Down, Calibration/Standby -->
+            <div class="kanban-column col-operational">
+              <div class="kanban-col-header">
+                <div class="col-title">
+                  <span class="status-indicator-dot dot-operational"></span>
+                  <h4>Đang Hoạt Động (Running)</h4>
+                </div>
+                <span class="col-badge" id="kanbanBadgeOperational">0</span>
+              </div>
+              <div class="kanban-card-list" id="kanbanListOperational"></div>
+            </div>
+
+            <div class="kanban-column col-maintenance">
+              <div class="kanban-col-header">
+                <div class="col-title">
+                  <span class="status-indicator-dot dot-maintenance"></span>
+                  <h4>Bảo Trì Định Kỳ</h4>
+                </div>
+                <span class="col-badge" id="kanbanBadgeMaintenance">0</span>
+              </div>
+              <div class="kanban-card-list" id="kanbanListMaintenance"></div>
+            </div>
+
+            <div class="kanban-column col-down">
+              <div class="kanban-col-header">
+                <div class="col-title">
+                  <span class="status-indicator-dot dot-down"></span>
+                  <h4>Sự Cố / Dừng Máy</h4>
+                </div>
+                <span class="col-badge danger" id="kanbanBadgeDown">0</span>
+              </div>
+              <div class="kanban-card-list" id="kanbanListDown"></div>
+            </div>
+
+            <div class="kanban-column col-other">
+              <div class="kanban-col-header">
+                <div class="col-title">
+                  <span class="status-indicator-dot dot-other"></span>
+                  <h4>Hiệu Chuẩn / Dự Phòng</h4>
+                </div>
+                <span class="col-badge" id="kanbanBadgeOther">0</span>
+              </div>
+              <div class="kanban-card-list" id="kanbanListOther"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW 3: MAINTENANCE TRACK SCHEDULE ================= -->
+        <section class="app-view" id="viewMaintenance" style="display: none;">
+          <div class="maintenance-schedule-wrapper">
+            <div class="section-hero-header">
+              <div>
+                <h2>Lịch Trình Bảo Dưỡng & Kiểm Định Thiết Bị</h2>
+                <p>Theo dõi chu kỳ bảo dưỡng định kỳ, cảnh báo máy móc sắp đến hạn và ghi nhận nhật ký kỹ thuật.</p>
+              </div>
+              <button class="btn btn-primary" id="btnQuickAddLog">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                <span>+ Lập Phiếu Bảo Dưỡng Mới</span>
+              </button>
+            </div>
+
+            <div class="maintenance-grid-layout">
+              <!-- Urgent Countdown Panel -->
+              <div class="card-panel">
+                <div class="panel-header">
+                  <h3>🚨 Cần Chú Ý Đặc Biệt (Quá Hạn & Sắp Đến Hạn)</h3>
+                  <span class="count-tag" id="urgentMaintenanceCount">0 máy</span>
+                </div>
+                <div class="urgent-items-list" id="urgentItemsContainer">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+
+              <!-- Maintenance Log Track Sheet History -->
+              <div class="card-panel">
+                <div class="panel-header" style="flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <h3>📜 Nhật Ký Bảo Dưỡng & Sửa Chữa Toàn Nhà Máy</h3>
+                    <span class="selection-counter-badge" id="maintSelectedCountBadge" style="display: none; background: rgba(37,99,235,0.15); color: var(--primary); padding: 3px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 700;">Đã chọn 0 mục</span>
+                  </div>
+                  <div class="toolbar-actions-group" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-sm btn-secondary" id="btnMaintPrintSelected" title="In phiếu hoặc danh sách bảo dưỡng đã chọn">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                      <span>In Ra</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary" id="btnExportMaintLogs" title="Xuất CSV các phiếu bảo dưỡng đã chọn hoặc tất cả">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      <span>Xuất CSV</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" id="btnMaintDeleteSelected" style="display: none;" title="Xóa các phiếu bảo dưỡng đã chọn">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                      <span>Xóa Đã Chọn</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="log-table-wrapper">
+                  <table class="industrial-table mini-table" id="maintHistoryTable">
+                    <thead>
+                      <tr>
+                        <th style="width: 38px; text-align: center;">
+                          <input type="checkbox" id="maintSelectAll" title="Chọn tất cả">
+                        </th>
+                        <th>Ngày</th>
+                        <th>Mã Máy</th>
+                        <th>Loại Hình</th>
+                        <th>Nội Dung / Hạng Mục</th>
+                        <th>Kỹ Thuật Viên</th>
+                        <th>Chi Phí</th>
+                        <th>Trạng Thái Sau Sửa</th>
+                        <th style="width: 100px; text-align: center;">Thao Tác</th>
+                      </tr>
+                    </thead>
+                    <tbody id="maintenanceHistoryTbody">
+                      <!-- Injected via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW 4: ANALYTICS & REPORTS ================= -->
+        <section class="app-view" id="viewAnalytics" style="display: none;">
+          <div class="analytics-wrapper">
+            <div class="section-hero-header">
+              <div>
+                <h2>Báo Cáo Phân Tích Tài Sản Nhà Máy</h2>
+                <p>Tổng quan phân bổ tài sản, tỷ lệ tình trạng máy móc theo từng phân xưởng và chi phí bảo trì.</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-secondary" id="btnRestoreDemoAnalytics" title="Nạp lại bộ dữ liệu 16 máy móc mẫu ban đầu">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                  <span>↺ Nạp Dữ Liệu Máy Mẫu</span>
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  <span>In Báo Cáo Tổng Hợp</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- HERO: INTERACTIVE MACHINERY COLUMN BAR CHART (BIỂU ĐỒ HÌNH CỘT) -->
+            <div class="chart-card full-width column-chart-card">
+              <div class="chart-header-controls">
+                <div class="chart-title-group">
+                  <div class="title-with-badge">
+                    <h3>📊 Biểu Đồ Hình Cột: Phân Tích & So Sánh Thiết Bị Máy Móc</h3>
+                    <span class="chart-tag-badge">Biểu Đồ Cột Đứng</span>
+                  </div>
+                  <p>Trực quan hóa so sánh chi phí bảo dưỡng, số giờ chạy, tỷ lệ Track Sheet ĐẠT/NG và nguyên giá theo từng dòng máy.</p>
+                </div>
+
+                <!-- Interactive Filters Bar -->
+                <div class="chart-filter-bar">
+                  <div class="filter-group">
+                    <label for="chartFilterCategory">Chủng Loại Máy:</label>
+                    <select id="chartFilterCategory" class="form-control form-control-sm">
+                      <option value="ALL">-- Tất Cả Loại Máy --</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="chartFilterAsset">Chọn Thiết Bị:</label>
+                    <select id="chartFilterAsset" class="form-control form-control-sm">
+                      <option value="ALL">-- Tất Cả Máy --</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label for="chartMetricSelector">Chỉ Số Phân Tích:</label>
+                    <select id="chartMetricSelector" class="form-control form-control-sm">
+                      <option value="today_status" selected>📅 Hiện Trạng & Khám Máy Hôm Nay</option>
+                      <option value="cost">💰 Chi Phí Bảo Dưỡng (VNĐ)</option>
+                      <option value="hours">⏱️ Số Giờ Vận Hành (Giờ)</option>
+                      <option value="tracksheet">📋 Kiểm Tra Track Sheet (Đạt vs NG)</option>
+                      <option value="value">💎 Nguyên Giá Tài Sản (VNĐ)</option>
+                      <option value="maint_count">🔧 Số Lượt Bảo Trì (Lần)</option>
+                    </select>
+                  </div>
+
+                  <div class="filter-group">
+                    <label>Góc Nhìn:</label>
+                    <div class="btn-group btn-group-sm">
+                      <button type="button" class="btn btn-sm btn-chart-mode active" id="btnChartModeAsset" data-mode="asset">Từng Máy Cụ Thể</button>
+                      <button type="button" class="btn btn-sm btn-chart-mode" id="btnChartModeCategory" data-mode="category">Theo Nhóm Loại</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column Chart Graphic Area -->
+              <div class="column-chart-wrapper" id="columnChartWrapper">
+                <!-- Injected dynamically via JS: vertical columns, gridlines, axis labels, tooltips -->
+              </div>
+
+              <!-- Summary Cards under Chart -->
+              <div class="chart-summary-cards" id="chartSummaryCards">
+                <!-- Injected dynamically via JS -->
+              </div>
+            </div>
+
+            <div class="analytics-charts-grid">
+              <!-- Distribution by Department -->
+              <div class="chart-card">
+                <h3>Phân Bổ Máy Móc Theo Phân Xưởng</h3>
+                <div class="chart-bar-list" id="chartDepartmentBars">
+                  <!-- Bars generated via JS -->
+                </div>
+              </div>
+
+              <!-- Distribution by Category -->
+              <div class="chart-card">
+                <h3>Cơ Cấu Thiết Bị Theo Chủng Loại</h3>
+                <div class="chart-bar-list" id="chartCategoryBars">
+                  <!-- Bars generated via JS -->
+                </div>
+              </div>
+
+              <!-- Status Health Summary -->
+              <div class="chart-card full-width">
+                <h3>Chỉ Số Sức Khỏe & Vận Hành Hệ Thống</h3>
+                <div class="stats-metric-row" id="analyticsMetricRow">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW: TRACK SHEET INSPECTION HISTORY ================= -->
+        <section class="app-view" id="viewInspectionHistory" style="display: none;">
+          <div class="maintenance-schedule-wrapper">
+            <!-- Hero Header -->
+            <div class="section-hero-header">
+              <div>
+                <h2>📋 Lịch Sử Kiểm Tra Track Sheet (Check Sheet History)</h2>
+                <p>Nhật ký theo dõi tất cả phiếu kiểm tra kỹ thuật máy móc theo ca (Điện áp, khí nén, dầu mỡ, nhiệt độ, an toàn E-Stop...). Cập nhật tức thời khi lưu hoặc xóa phiếu.</p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <span class="selection-counter-badge" id="inspSelectedCountBadge" style="display: none; background: rgba(37,99,235,0.15); color: var(--primary); padding: 5px 12px; border-radius: 12px; font-size: 0.82rem; font-weight: 700;">Đã chọn 0 phiếu</span>
+                <button type="button" class="btn btn-primary" id="btnNewInspectionFromHistory">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>➕ Lập Phiếu Mới</span>
+                </button>
+                <button type="button" class="btn btn-secondary" id="btnInspPrintSelected" title="In phiếu kiểm tra hoặc danh sách đã chọn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  <span>In Ra</span>
+                </button>
+                <button type="button" class="btn btn-secondary" id="btnExportInspectionHistoryCSV" title="Tải xuống lịch sử Track Sheet đã chọn dạng CSV / Excel">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Xuất CSV</span>
+                </button>
+                <button type="button" class="btn btn-danger" id="btnInspDeleteSelected" style="display: none;" title="Xóa các phiếu kiểm tra đã chọn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <span>Xóa Đã Chọn</span>
+                </button>
+                <button type="button" class="btn btn-secondary" id="btnRefreshInspectionHistory" title="Làm mới bảng lịch sử và đồng bộ dữ liệu">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  <span>Làm Mới</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- KPI Summary Cards for Inspections -->
+            <div class="inspection-kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-icon blue">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <div class="kpi-data">
+                  <span class="kpi-label">Tổng Lượt Check Sheet</span>
+                  <span class="kpi-val" id="inspStatTotal">0</span>
+                  <span class="kpi-sub">Lịch sử kiểm tra toàn xưởng</span>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon green">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="kpi-data">
+                  <span class="kpi-label">Lượt ĐẠT Chuẩn (PASS)</span>
+                  <span class="kpi-val text-success" id="inspStatPass">0</span>
+                  <span class="kpi-sub">Đủ điều kiện vận hành an toàn</span>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon red">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div class="kpi-data">
+                  <span class="kpi-label">Lượt Cảnh Báo / Lỗi (FAIL/NG)</span>
+                  <span class="kpi-val text-danger" id="inspStatFail">0</span>
+                  <span class="kpi-sub">Cần kỹ thuật kiểm tra xử lý</span>
+                </div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-icon orange">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <div class="kpi-data">
+                  <span class="kpi-label">Tỷ Lệ Đạt Toàn Nhà Máy</span>
+                  <span class="kpi-val" id="inspStatRate">0%</span>
+                  <span class="kpi-sub">Tỷ lệ phiếu kiểm tra đạt chuẩn</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Filter & Search Toolbar -->
+            <div class="filter-controls-bar">
+              <div class="filter-group" style="flex: 1; max-width: 320px;">
+                <div class="search-box-wrapper" style="width: 100%;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input type="text" id="inspSearchInput" placeholder="Tìm theo mã máy, tên máy, người kiểm tra..." class="search-input">
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <div class="select-wrapper">
+                  <label for="inspFilterAsset">Thiết bị:</label>
+                  <select id="inspFilterAsset" class="custom-select">
+                    <option value="all">-- Tất cả thiết bị --</option>
+                  </select>
+                </div>
+
+                <div class="select-wrapper">
+                  <label for="inspFilterStatus">Kết quả:</label>
+                  <select id="inspFilterStatus" class="custom-select">
+                    <option value="all">Tất cả kết quả</option>
+                    <option value="PASS">✅ Chỉ Đạt (PASS)</option>
+                    <option value="FAIL">🚨 Chỉ Cảnh Báo (FAIL/NG)</option>
+                  </select>
+                </div>
+
+                <div class="select-wrapper">
+                  <label for="inspFilterDept">Phân xưởng:</label>
+                  <select id="inspFilterDept" class="custom-select">
+                    <option value="all">Tất cả phân xưởng</option>
+                  </select>
+                </div>
+
+                <button type="button" class="btn btn-secondary btn-sm" id="btnResetInspFilter" title="Xóa bộ lọc">
+                  <span>Đặt Lại</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Inspection History Table Container -->
+            <div class="table-container-card" id="inspTableWrapper">
+              <div class="table-responsive">
+                <table class="industrial-table" id="inspectionHistoryTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 38px; text-align: center;">
+                        <input type="checkbox" id="inspSelectAll" title="Chọn tất cả">
+                      </th>
+                      <th class="text-center" style="width: 44px;">#</th>
+                      <th style="min-width: 130px;">Thời Gian & Ca</th>
+                      <th style="min-width: 180px;">Thiết Bị / Máy Móc</th>
+                      <th style="min-width: 120px;">Người Kiểm Tra</th>
+                      <th style="min-width: 110px;">Kết Quả</th>
+                      <th style="min-width: 110px;">Đánh Giá Mục</th>
+                      <th style="min-width: 180px;">Thông Số Nổi Bật</th>
+                      <th style="min-width: 180px;">Ghi Chú Đánh Giá</th>
+                      <th class="text-center" style="width: 140px;">Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="inspectionHistoryTbody">
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Empty State for Inspections -->
+            <div class="empty-state" id="inspEmptyState" style="display: none; padding: 48px 24px; text-align: center; background: var(--card-bg); border-radius: var(--radius-lg); border: 1px dashed var(--border-color); flex-direction: column; align-items: center; gap: 14px;">
+              <div style="font-size: 3rem;">📋</div>
+              <h3 style="color: var(--text-main); font-size: 1.25rem; font-weight: 700; margin: 0;">Chưa có lượt kiểm tra Track Sheet nào</h3>
+              <p style="color: var(--text-muted); max-width: 480px; margin: 0; font-size: 0.9rem; line-height: 1.5;">Hệ thống chưa ghi nhận phiếu kiểm tra nào phù hợp với bộ lọc hiện tại. Hãy bấm nút bên dưới để tiến hành kiểm tra cho một máy móc trong xưởng.</p>
+              <button type="button" class="btn btn-primary" onclick="window.openSelectAssetForInspection()" style="margin-top: 8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>➕ Lập Phiếu Check Sheet Đầu Tiên</span>
+              </button>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="pagination-bar" id="inspPaginationWrapper" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+              <div class="pagination-info" id="inspPageInfo" style="font-size: 0.88rem; color: var(--text-muted);">
+                Trang 1 / 1
+              </div>
+              <div class="pagination-buttons" style="display: flex; gap: 8px;">
+                <button type="button" class="btn btn-secondary btn-sm" id="btnInspPrevPage">
+                  &larr; Trang Trước
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnInspNextPage">
+                  Trang Sau &rarr;
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ================= MODAL: ADD / EDIT ASSET ================= -->
+  <div class="modal-overlay" id="assetFormModal" style="display: none;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 id="modalAssetTitle">Thêm Máy Móc & Thiết Bị Mới</h3>
+          <p>Nhập thông tin chi tiết vào hồ sơ lý lịch máy móc</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseAssetModal">&times;</button>
+      </div>
+
+      <form id="assetForm" class="modal-body">
+        <input type="hidden" id="formAssetId" value="">
+
+        <div class="form-row grid-3">
+          <div class="form-group">
+            <label for="formCode">Mã Tài Sản (Tag ID) <span class="required">*</span></label>
+            <div class="input-with-action">
+              <input type="text" id="formCode" required placeholder="VD: EQ-CNC-001" class="form-control">
+              <button type="button" class="btn btn-secondary btn-sm" id="btnAutoCode" title="Tự động tạo mã">Tự sinh</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formName">Tên Máy Móc / Thiết Bị <span class="required">*</span></label>
+            <input type="text" id="formName" required placeholder="VD: Máy Phay CNC 5 Trục Mazak Variaxis" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formCategory">Chủng Loại <span class="required">*</span></label>
+            <select id="formCategory" required class="form-control">
+              <option value="Máy Phay / Tiện CNC">Máy Phay / Tiện CNC</option>
+              <option value="máy tính pc / laptop"> máy tính PC/ Laptop</option>
+              <option value="Máy Ép Nhựa Thủy Lực">Máy Ép Nhựa Thủy Lực</option>
+              <option value="Dây Chuyền SMT Gắn Chip">Dây Chuyền SMT Gắn Chip </option>
+              <option value="Máy Kiểm Tra Vision AI / AOI">Máy Kiểm Tra Vision AI / AOI</option>
+              <option value="Máy Nén Khí Trục Vít">Máy Nén Khí Trục Vít</option>
+              <option value="Băng Tải & Cấp Liệu Tự Động">Băng Tải & Cấp Liệu Tự Động</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row grid-3">
+          <div class="form-group">
+            <label for="formDepartment">Phân Xưởng <span class="required">*</span></label>
+            <select id="formDepartment" required class="form-control">
+              <option value="Xưởng Cơ Khí A">Xưởng Cơ Khí A</option>
+              <option value="Xưởng Đúc Ép B">Xưởng Đúc Ép B</option>
+              <option value="Xưởng SMT Điện Tử C">Xưởng SMT Điện Tử C</option>
+              <option value="Xưởng Lắp Ráp & Đóng Gói D">Xưởng Lắp Ráp & Đóng Gói D</option>
+              <option value="Phòng QC & Đo Lường">Phòng QC & Đo Lường</option>
+              <option value="Trạm Cấp Nguồn & Phụ Trợ">Trạm Cấp Nguồn & Phụ Trợ</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="formLocation">Vị Trí Cụ Thể (Line / Station)</label>
+            <input type="text" id="formLocation" placeholder="VD: Line 1 - Ô số 04" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formStatus">Trạng Thái Vận Hành <span class="required">*</span></label>
+            <select id="formStatus" required class="form-control">
+              <option value="operational">🟢 Đang hoạt động (Running)</option>
+              <option value="maintenance">🟡 Đang bảo trì định kỳ</option>
+              <option value="down">🔴 Gặp sự cố / Dừng máy</option>
+              <option value="calibration">🟣 Chờ kiểm định / Hiệu chuẩn</option>
+              <option value="standby">⚪ Máy dự phòng (Standby)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row grid-3">
+          <div class="form-group">
+            <label for="formManufacturer">Hãng Sản Xuất</label>
+            <input type="text" id="formManufacturer" placeholder="VD: Mazak, Fanuc, ABB..." class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formModel">Model / Số Serial</label>
+            <input type="text" id="formModel" placeholder="VD: VX-i700 / SN: 2024-8891" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formOperator">Kỹ Thuật Viên Phụ Trách</label>
+            <input type="text" id="formOperator" placeholder="VD: Nguyễn Văn Thắng (0912.xxx)" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-row grid-3">
+          <div class="form-group">
+            <label for="formCommissionDate">Ngày Bắt Đầu Sử Dụng</label>
+            <input type="date" id="formCommissionDate" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formMaintenanceInterval">Chu Kỳ Bảo Dưỡng (Ngày) <span class="required">*</span></label>
+            <input type="number" id="formMaintenanceInterval" required min="7" max="730" value="90" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formLastMaintenance">Ngày Bảo Dưỡng Gần Nhất</label>
+            <input type="date" id="formLastMaintenance" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-row grid-3">
+          <div class="form-group">
+            <label for="formValue">Nguyên Giá Tài Sản (VNĐ)</label>
+            <input type="number" id="formValue" placeholder="VD: 1500000000" min="1000" step="1000" class="form-control"
+              title="Nhập giá trị tối thiểu 1.000 VNĐ">
+            <small class="form-hint" style="color:var(--text-dim);font-size:0.78rem;margin-top:3px;display:block;">Tối thiểu 1.000 VNĐ</small>
+          </div>
+
+          <div class="form-group">
+            <label for="formOperatingHours">Giờ Đã Chạy (Operating Hours)</label>
+            <input type="number" id="formOperatingHours" placeholder="VD: 3450 giờ" min="0" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formCheckSheetInterval">Chu Kỳ Check Sheet (Ngày) <span class="required">*</span></label>
+            <input type="number" id="formCheckSheetInterval" required min="1" max="365" value="1" class="form-control"
+              title="Nhập số ngày giữa 2 lần kiểm tra Track Sheet, VD: 1 = kiểm tra mỗi ngày, 7 = mỗi tuần">
+            <small class="form-hint" style="color:var(--text-dim);font-size:0.78rem;margin-top:3px;display:block;">VD: 1 ngày/lần, 7 ngày/lần</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formSpecs">Thông Số Kỹ Thuật Chính & Ghi Chú</label>
+          <textarea id="formSpecs" rows="2" placeholder="VD: Nguồn 3 pha 380V, Áp suất khí nén 6 bar, Công suất 15kW, Spindle 18000 RPM..." class="form-control"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelAsset">Hủy Bỏ</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveAsset">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span>Lưu Thông Tin Máy</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ASSET DETAILS & DEEP DIVE ================= -->
+  <div class="modal-overlay" id="assetDetailModal" style="display: none;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="detail-code-badge" id="detailAssetBadge">EQ-XXX</div>
+          <h3 id="detailAssetName">Chi Tiết Máy Móc</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseDetailModal">&times;</button>
+      </div>
+
+      <div class="modal-body detail-modal-body">
+        <div class="detail-hero-banner" id="detailHeroBanner">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="detail-status-pill" id="detailStatusPill">Hoạt động</div>
+            <button type="button" class="btn btn-sm" onclick="window.openQuickStatusModal(document.getElementById('assetDetailModal').dataset.currentAssetId)" style="padding:3px 10px; font-size:0.78rem; border-radius:4px; font-weight:600; cursor:pointer; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); color:#ffffff;" title="Chuyển trạng thái máy này sang bảo trì hoặc sự cố">
+              ⚡ Đổi Trạng Thái
+            </button>
+          </div>
+          <div class="detail-quick-meta">
+            <span id="detailDepartmentText">Xưởng Cơ Khí A</span> &bull; 
+            <span id="detailLocationText">Line 1</span> &bull; 
+            Phụ trách: <strong id="detailOperatorText">Nguyễn Văn A</strong>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-card">
+            <h4>Thông Số Kỹ Thuật & Lý Lịch</h4>
+            <table class="property-table">
+              <tr><td>Hãng sản xuất:</td><td id="dtlManufacturer">-</td></tr>
+              <tr><td>Model / Serial:</td><td id="dtlModel">-</td></tr>
+              <tr><td>Chủng loại:</td><td id="dtlCategory">-</td></tr>
+              <tr><td>Ngày vận hành:</td><td id="dtlCommissionDate">-</td></tr>
+              <tr><td>Nguyên giá tài sản:</td><td id="dtlValue" class="text-highlight">-</td></tr>
+              <tr><td>Tổng giờ đã chạy:</td><td id="dtlOperatingHours">-</td></tr>
+              <tr><td>Thông số chính:</td><td id="dtlSpecs">-</td></tr>
+            </table>
+          </div>
+
+          <div class="detail-card">
+            <h4>Tình Trạng Bảo Dưỡng</h4>
+            <div class="maintenance-countdown-box" id="detailCountdownBox">
+              <span class="countdown-label">Hạn bảo dưỡng kế tiếp:</span>
+              <div class="countdown-days" id="dtlNextDue">--/--/----</div>
+              <div class="countdown-sub" id="dtlDueRemaining">Còn 0 ngày</div>
+              <div class="meter-bar">
+                <div class="meter-fill" id="dtlDueMeter" style="width: 50%;"></div>
+              </div>
+            </div>
+
+            <div class="detail-action-buttons">
+              <button type="button" class="btn btn-success btn-sm btn-block btn-checksheet-card" id="btnCheckSheetFromDetailCard" title="Thực hiện Check Sheet kiểm tra ca 10 hạng mục cho máy này">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span>📋 Thực Hiện Check Sheet (Khám Ca)</span>
+              </button>
+              <button class="btn btn-primary btn-sm btn-block" id="btnOpenNewMaintForAsset">
+                + Ghi Nhật Ký Bảo Dưỡng Máy Này
+              </button>
+              <button class="btn btn-secondary btn-sm btn-block" id="btnPrintQRForAsset">
+                In Tem Nhãn QR Code
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lịch Sử Kiểm Tra Track Sheet 10 Hạng Mục -->
+        <div class="detail-logs-section" style="margin-bottom: 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4>📋 Lịch Sử Kiểm Tra Track Sheet (10 Hạng Mục Vận Hành)</h4>
+            <button class="btn btn-sm btn-primary" id="btnInspectFromDetail">+ Lập Phiếu Kiểm Tra Ca</button>
+          </div>
+          <div class="table-responsive-scroll">
+            <table class="industrial-table mini-table">
+              <thead>
+                <tr>
+                  <th>Ngày & Giờ</th>
+                  <th>Ca Làm Việc</th>
+                  <th>Người Kiểm Tra</th>
+                  <th>Điện Áp</th>
+                  <th>Áp Lực Khí</th>
+                  <th>Dầu Bôi Trơn</th>
+                  <th>Nhiệt Độ</th>
+                  <th>Kết Quả</th>
+                  <th>Đánh Giá Chung</th>
+                </tr>
+              </thead>
+              <tbody id="detailInspectionHistoryTbody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="detail-logs-section">
+          <h4>Lịch Sử Bảo Trì / Sửa Chữa Của Máy</h4>
+          <div class="detail-logs-list" id="detailLogsList">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="btnCheckSheetFooter" title="Mở phiếu Check Sheet khám ca">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Check Sheet</span>
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCloseDetail">Đóng</button>
+        <button type="button" class="btn btn-warning" id="btnEditFromDetail">Chỉnh Sửa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: ADD MAINTENANCE LOG ================= -->
+  <div class="modal-overlay" id="maintenanceLogModal" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>Ghi Nhật Ký Bảo Dưỡng / Sửa Chữa</h3>
+          <p id="maintModalSubtitle">Cập nhật track sheet bảo dưỡng thiết bị</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseMaintModal">&times;</button>
+      </div>
+
+      <form id="maintLogForm" class="modal-body">
+        <input type="hidden" id="maintLogId" value="">
+        <input type="hidden" id="maintAssetId" value="">
+
+        <div class="form-group">
+          <label for="maintAssetSelect">Chọn Thiết Bị / Máy Móc <span class="required">*</span></label>
+          <select id="maintAssetSelect" required class="form-control">
+            <!-- Injected via JS -->
+          </select>
+        </div>
+
+        <div class="form-row grid-2">
+          <div class="form-group">
+            <label for="maintDate">Ngày Thực Hiện <span class="required">*</span></label>
+            <input type="date" id="maintDate" required class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="maintType">Loại Hình Công Việc <span class="required">*</span></label>
+            <select id="maintType" required class="form-control">
+              <option value="Bảo dưỡng định kỳ">Bảo dưỡng định kỳ (Periodic PM)</option>
+              <option value="Sửa chữa sự cố">Sửa chữa sự cố (Breakdown Repair)</option>
+              <option value="Thay thế linh kiện">Thay thế phụ tùng tiêu hao</option>
+              <option value="Kiểm định & Hiệu chuẩn">Kiểm định & Hiệu chuẩn đo lường</option>
+              <option value="Đại tu máy">Đại tu nâng cấp (Overhaul)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="maintDescription">Nội Dung Thực Hiện / Hiện Tượng Sự Cố <span class="required">*</span></label>
+          <textarea id="maintDescription" rows="3" required placeholder="VD: Thay dầu thủy lực tuần hoàn, vệ sinh cụm ray dẫn hướng trục X/Y, căng chỉnh dây đai truyền động, kiểm tra cảm biến áp suất..." class="form-control"></textarea>
+        </div>
+
+        <div class="form-row grid-3">
+          <div class="form-group">
+            <label for="maintTechnician">Kỹ Thuật Viên <span class="required">*</span></label>
+            <input type="text" id="maintTechnician" required placeholder="VD: Trần Đình Long" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="maintCost">Chi Phí (VNĐ)</label>
+            <input type="number" id="maintCost" min="0" placeholder="0" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="maintResultStatus">Trạng Thái Sau Xử Lý <span class="required">*</span></label>
+            <select id="maintResultStatus" required class="form-control">
+              <option value="operational">🟢 Đã OK - Đưa vào chạy</option>
+              <option value="maintenance">🟡 Đang chờ linh kiện</option>
+              <option value="down">🔴 Chưa khắc phục xong</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnCancelMaint">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveMaint">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+            <span>Lưu Phiếu & Cập Nhật Hạn Mới</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: QR ASSET TAG & PRINT ================= -->
+  <div class="modal-overlay" id="qrTagModal" style="display: none;">
+    <div class="modal-dialog modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>Tem Nhãn Quản Lý Máy Móc (Asset Tag)</h3>
+          <p>Mẫu tem dán công nghiệp kèm mã QR định danh</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseQRModal">&times;</button>
+      </div>
+
+      <div class="modal-body qr-modal-body">
+        <!-- Printable Industrial Tag -->
+        <div class="industrial-tag-container" id="printableAssetTag">
+          <div class="tag-header">
+            <div class="tag-company">SDRAGON INDUSTRIAL PRECISION</div>
+            <div class="tag-type">TEM QUẢN LÝ TÀI SẢN MÁY MÓC</div>
+          </div>
+
+          <div class="tag-body">
+            <div class="tag-qr-box">
+              <canvas id="qrCodeCanvas" width="130" height="130"></canvas>
+              <span class="qr-sub-text">Quét để xem hồ sơ</span>
+            </div>
+
+            <div class="tag-info-box">
+              <div class="tag-field">
+                <span class="lbl">MÃ THIẾT BỊ:</span>
+                <strong class="val tag-code-text" id="tagCode">EQ-CNC-001</strong>
+              </div>
+              <div class="tag-field">
+                <span class="lbl">TÊN MÁY:</span>
+                <span class="val" id="tagName">Máy Phay CNC Mazak</span>
+              </div>
+              <div class="tag-field">
+                <span class="lbl">VỊ TRÍ:</span>
+                <span class="val" id="tagLocation">Xưởng Cơ Khí A - Line 1</span>
+              </div>
+              <div class="tag-field">
+                <span class="lbl">MODEL/SN:</span>
+                <span class="val" id="tagModel">Variaxis i-700</span>
+              </div>
+              <div class="tag-field">
+                <span class="lbl">HẠN BẢO DƯỠNG:</span>
+                <span class="val highlight" id="tagDue">30/11/2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tag-footer">
+            <span>Hotline Kỹ Thuật: 1900.888.999</span>
+            <span>&bull;</span>
+            <span>Hệ thống QC Vision SDragon</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCloseQR">Đóng</button>
+        <button type="button" class="btn btn-primary" id="btnPrintTag">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span>In Tem Nhãn Ngay</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: QUICK QR SCAN & LOOKUP ================= -->
+  <div class="modal-overlay" id="quickQRScanModal" style="display: none;">
+    <div class="modal-dialog modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>🔍 Quét Mã QR / Tra Cứu Thông Tin Máy</h3>
+          <p>Trỏ trực tiếp đến hồ sơ máy & Check Sheet</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseQuickQRModal">&times;</button>
+      </div>
+
+      <div class="modal-body quick-qr-body">
+        <div class="quick-qr-camera-wrap" id="qrCameraContainer">
+          <video id="qrCameraVideo" playsinline style="display:none; width:100%; border-radius:12px; max-height:220px; background:#000; object-fit:cover;"></video>
+          <div class="qr-camera-placeholder" id="qrCameraPlaceholder">
+            <div class="qr-scan-reticle">
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              <div class="qr-scan-laser-line"></div>
+            </div>
+            <p style="margin-top:10px; font-size:0.85rem; color:var(--text-muted); text-align:center;">Quét tem QR dán trên máy bằng Camera điện thoại / iPad hoặc súng quét mã vạch</p>
+            <button type="button" class="btn btn-sm btn-outline" id="btnStartCamera" style="margin-top:6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span>Bật Camera Quét Trực Tiếp</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="quick-qr-input-section" style="margin-top: 16px;">
+          <label for="quickQRInput" style="font-weight: 600; font-size: 0.88rem; margin-bottom: 6px; display: block;">
+            Nhập hoặc Quét Mã Máy (VD: EQ-CNC-001):
+          </label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="quickQRInput" class="form-control" placeholder="Quét mã barcode hoặc nhập mã thiết bị..." autofocus autocomplete="off">
+            <button type="button" class="btn btn-primary" id="btnSubmitQuickQR" style="flex-shrink:0;">
+              Mở Ngay
+            </button>
+          </div>
+          <small style="color:var(--text-dim); margin-top: 6px; display:block; font-size:0.78rem;">
+            💡 Thiết bị đọc mã vạch / máy quét súng QR tự động gửi mã và mở trực tiếp hồ sơ máy.
+          </small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCloseQuickQRBtn">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: EXPORT / IMPORT ================= -->
+  <div class="modal-overlay" id="exportImportModal" style="display: none;">
+    <div class="modal-dialog modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>Xuất / Nhập & Sao Lưu Dữ Liệu</h3>
+          <p>Quản lý dữ liệu track sheet ngoại tuyến hoặc đồng bộ</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseExportModal">&times;</button>
+      </div>
+
+      <div class="modal-body export-import-body">
+        <!-- Export Section -->
+        <div class="export-box">
+          <h4>📤 Xuất Báo Cáo & Dữ Liệu</h4>
+          <p>Tải toàn bộ danh mục tài sản hoặc nhật ký bảo trì về máy tính:</p>
+          <div class="btn-group-wrap">
+            <button class="btn btn-secondary" id="btnExportCSV">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Xuất Danh Mục Máy (CSV/Excel)</span>
+            </button>
+            <button class="btn btn-secondary" id="btnExportInspectionsCSV">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              <span>Xuất Nhật Ký Track Sheet 10 Mục (CSV)</span>
+            </button>
+            <button class="btn btn-secondary" id="btnBackupJSON">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+              <span>Sao Lưu Cơ Sở Dữ Liệu (JSON)</span>
+            </button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Import Section -->
+        <div class="export-box">
+          <h4>📥 Nhập Dữ Liệu Từ File</h4>
+          <p>Phục hồi từ bản sao lưu JSON hoặc tải lên file dữ liệu:</p>
+          <div class="file-upload-zone" id="fileDropZone">
+            <input type="file" id="fileInputUpload" accept=".json,.csv" style="display:none;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            <p>Kéo thả file <strong>.json</strong> hoặc <strong>.csv</strong> vào đây, hoặc click để chọn file</p>
+            <button type="button" class="btn btn-sm btn-secondary" id="btnSelectFile">Chọn File Từ Máy Tính</button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Reset & Seed Demo Data -->
+        <div class="export-box">
+          <h4>🔄 Dữ Liệu Mẫu Công Nghiệp</h4>
+          <p>Tải lại danh sách 15+ máy móc công nghiệp mẫu chuẩn nhà máy:</p>
+          <button class="btn btn-warning btn-sm" id="btnResetDemoData">
+            Tải Lại Dữ Liệu Mẫu Công Nghiệp
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnCloseExportFooter">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- ================= MODAL: LOGIN / SWITCH ACCOUNT ================= -->
+  <div class="modal-overlay" id="loginModal" style="display: none;">
+    <div class="modal-dialog modal-md login-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>🔐 Đăng Nhập Hệ Thống SDragon</h3>
+          <p>Xác thực quyền hạn để thao tác máy móc thiết bị</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseLoginModal">&times;</button>
+      </div>
+
+      <form id="loginForm" class="modal-body">
+        <div class="form-group">
+          <label for="loginUsername">Tên Đăng Nhập <span class="required">*</span></label>
+          <input type="text" id="loginUsername" required placeholder="Nhập username (vd: admin, kythuat, vanhanh)" class="form-control" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">Mật Khẩu <span class="required">*</span></label>
+          <div class="input-with-action">
+            <input type="password" id="loginPassword" required placeholder="Nhập mật khẩu" class="form-control" autocomplete="current-password">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnTogglePassword">Hiện</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px; padding: 12px;">
+          <span>Đăng Nhập Ngay</span>
+        </button>
+
+        <!-- Quick 1-Click Demo Accounts -->
+        <div class="demo-accounts-box">
+          <span class="demo-box-title">⚡ Chọn Nhanh Tài Khoản Mẫu (Bấm để đăng nhập ngay):</span>
+          <div class="demo-chips-grid">
+            <button type="button" class="demo-login-chip" data-user="admin" data-pass="123" title="Quyền Quản Trị Viên cao nhất">
+              <span class="chip-role admin">👑 Admin</span>
+              <span class="chip-info">admin</span>
+            </button>
+            <button type="button" class="demo-login-chip" data-user="kythuat" data-pass="123" title="Quyền Kỹ thuật viên bảo trì">
+              <span class="chip-role technician">🔧 Kỹ Thuật</span>
+              <span class="chip-info">kythuat</span>
+            </button>
+            <button type="button" class="demo-login-chip" data-user="vanhanh" data-pass="123" title="Quyền Xem & Quét mã">
+              <span class="chip-role operator">👷 Vận Hành</span>
+              <span class="chip-info">vanhanh</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: USER MANAGEMENT (ADMIN ONLY) ================= -->
+  <div class="modal-overlay" id="userManagementModal" style="display: none;">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>👥 Quản Lý Tài Khoản & Phân Quyền (Admin)</h3>
+          <p>Quản lý danh sách nhân viên kỹ thuật, phân quyền và cấp tài khoản</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseUserMgmt">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- New User Creation Form -->
+        <div class="alert alert-warning" id="adminOnlyUserNotice" style="display:none; margin-bottom:16px; padding:12px 16px; border-radius:8px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#ef4444; font-size:0.86rem;">
+          🔒 Chỉ Quản Trị Viên (Admin) mới có quyền tạo tài khoản và xem mật khẩu của hệ thống.
+        </div>
+        <div class="card-panel" id="newUserCardPanel" style="margin-bottom: 20px;">
+          <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--text-main);">+ Thêm Tài Khoản Nhân Viên Mới</h4>
+          <form id="newUserForm">
+            <div class="form-row grid-3">
+              <div class="form-group">
+                <label>Tên Đăng Nhập <span class="required">*</span></label>
+                <input type="text" id="newUsername" required placeholder="VD: thang.nv" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Mật Khẩu <span class="required">*</span></label>
+                <input type="text" id="newPassword" required placeholder="Mật khẩu khởi tạo" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Họ Và Tên <span class="required">*</span></label>
+                <input type="text" id="newFullName" required placeholder="VD: Nguyễn Văn Thắng" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-row grid-3" style="margin-top: 10px;">
+              <div class="form-group">
+                <label>Phân Quyền Hệ Thống <span class="required">*</span></label>
+                <select id="newRole" required class="form-control">
+                  <option value="technician">🔧 Kỹ Thuật Viên (Thêm/Sửa/Bảo trì)</option>
+                  <option value="operator">👷 Người Vận Hành (Chỉ xem/quét QR)</option>
+                  <option value="admin">👑 Quản Trị Viên (Toàn quyền)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Phân Xưởng / Bộ Phận</label>
+                <input type="text" id="newDepartment" placeholder="VD: Xưởng Cơ Khí A" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Email Liên Hệ</label>
+                <input type="email" id="newEmail" placeholder="thang@sdragon.vn" class="form-control">
+              </div>
+            </div>
+
+            <div style="text-align: right; margin-top: 14px;">
+              <button type="submit" class="btn btn-primary btn-sm">
+                <span>+ Tạo Tài Khoản</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Users Table -->
+        <h4 style="font-size:0.9rem; margin-bottom:10px; color:var(--text-main);">Danh Sách Tài Khoản Trong Nhà Máy</h4>
+        <div class="table-responsive-scroll">
+          <table class="industrial-table mini-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Họ Tên</th>
+                <th>Phân Quyền</th>
+                <th>Phân Xưởng</th>
+                <th>Mật Khẩu</th>
+                <th class="text-center">Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody id="userListTbody">
+              <!-- Injected via auth.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- ================= MODAL: TRACK SHEET 10-ITEM INSPECTION ================= -->
+  <div class="modal-overlay" id="trackInspectionModal" style="display: none;">
+    <div class="modal-dialog modal-xl checksheet-modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>📋 PHIẾU KIỂM TRA VẬN HÀNH TRACK SHEET</h3>
+          <p>Kiểm tra kỹ thuật an toàn định kỳ & theo ca: Điện áp, Khí nén, Dầu, Nhiệt độ, Rung ồn, An toàn E-Stop... (Có thể thêm/xóa hạng mục theo từng loại máy)</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseInspectModal">&times;</button>
+      </div>
+
+      <form id="trackInspectionForm" class="modal-body checksheet-modal-body">
+        <input type="hidden" id="inspectAssetId" value="">
+
+        <!-- Top Machine Information Card -->
+        <div class="checksheet-hero-card">
+          <div class="machine-meta-badge">
+            <span class="badge-code" id="inspectModalAssetCode">EQ-XXX</span>
+            <div class="machine-title-info">
+              <h4 id="inspectModalAssetName">Tên Thiết Bị</h4>
+              <span id="inspectModalAssetDept">Xưởng Cơ Khí A &bull; Line 1</span>
+            </div>
+          </div>
+
+          <div class="shift-meta-inputs">
+            <div class="form-group">
+              <label for="inspectShift">Ca Làm Việc <span class="required">*</span></label>
+              <select id="inspectShift" required class="form-control">
+                <option value="Ca 1 (06:00 - 14:00)">Ca 1 (06:00 - 14:00)</option>
+                <option value="Ca 2 (14:00 - 22:00)">Ca 2 (14:00 - 22:00)</option>
+                <option value="Ca 3 (22:00 - 06:00)">Ca 3 (22:00 - 06:00)</option>
+                <option value="Ca Hành Chính (08:00 - 17:00)">Ca Hành Chính (08:00 - 17:00)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="inspectDate">Ngày Kiểm Tra <span class="required">*</span></label>
+              <input type="date" id="inspectDate" required class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="inspectTime">Giờ Kiểm Tra <span class="required">*</span></label>
+              <input type="time" id="inspectTime" required class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="inspectInspector">Người Kiểm Tra <span class="required">*</span></label>
+              <input type="text" id="inspectInspector" required placeholder="Họ tên người kiểm tra" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <!-- Checksheet Action Toolbar -->
+        <div class="checksheet-toolbar">
+          <div class="toolbar-hint">
+            <strong>⚡ Thao tác danh mục kiểm tra:</strong>
+            <span>Thêm/xóa mục theo đặc thù thiết bị hoặc đánh giá nhanh</span>
+          </div>
+          <div class="toolbar-btns">
+            <button type="button" class="btn btn-sm btn-primary btn-add-check-item" id="btnAddCheckItem" title="Thêm một hạng mục kiểm tra mới cho máy này">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>+ Thêm Mục Kiểm Tra</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-quick-pass" id="btnSelectAllPass" title="Chọn tất cả các mục hiện có là ĐẠT (OK)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              <span id="btnSelectAllText">✓ Chọn Tất Cả ĐẠT (OK)</span>
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" id="btnResetInspectForm" title="Khôi phục lại 10 mục tiêu chuẩn ban đầu">
+              <span>↺ Khôi Phục 10 Mục Gốc</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- The Inspection Table -->
+        <div class="table-responsive-scroll checksheet-table-wrap">
+          <table class="industrial-table checksheet-table">
+            <thead>
+              <tr>
+                <th style="width: 44px; text-align: center;">STT</th>
+                <th style="min-width: 280px;">Hạng Mục Kiểm Tra & Tiêu Chuẩn Kỹ Thuật</th>
+                <th style="width: 140px;">Phương Pháp</th>
+                <th style="width: 170px;">Giá Trị Đo Thực Tế <span class="required">*</span></th>
+                <th style="width: 160px; text-align: center;">Đánh Giá <span class="required">*</span></th>
+                <th style="min-width: 160px;">Ghi Chú / Bất Thường</th>
+                <th style="width: 50px; text-align: center;" title="Xóa hạng mục">Xóa</th>
+              </tr>
+            </thead>
+            <tbody id="checksheetTbody">
+              <!-- Injected dynamically via JS with items -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Live Summary & Overall Conclusion Card -->
+        <div class="checksheet-summary-bar">
+          <div class="summary-counts">
+            <div class="count-box total">
+              <span class="lbl">TỔNG MỤC:</span>
+              <strong class="val" id="summaryTotalCount">10/10</strong>
+            </div>
+            <div class="count-box pass">
+              <span class="lbl">SỐ MỤC ĐẠT (OK):</span>
+              <strong class="val" id="summaryPassCount">0</strong>
+            </div>
+            <div class="count-box fail">
+              <span class="lbl">SỐ MỤC LỖI (NG):</span>
+              <strong class="val" id="summaryFailCount">0</strong>
+            </div>
+          </div>
+
+          <div class="summary-conclusion-box">
+            <span class="lbl">KẾT LUẬN VẬN HÀNH CHUYỀN:</span>
+            <div class="conclusion-badge pass" id="summaryConclusionBadge">
+              <span class="stat-dot"></span>
+              <span id="summaryConclusionText">ĐANG CHỜ ĐÁNH GIÁ</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- General Inspection Notes -->
+        <div class="form-group">
+          <label for="inspectOverallNotes">Đánh Giá Tổng Thể Của Người Kiểm Tra & Ý Kiến Bàn Giao Ca</label>
+          <textarea id="inspectOverallNotes" rows="2" placeholder="VD: Điện áp và áp lực khí nén đủ điều kiện chạy ca. Máy vệ sinh sạch sẽ, sẵn sàng cấp phôi..." class="form-control"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btnPrintInspectionForm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span>In Phiếu Kiểm Tra Ca</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="btnCancelInspect">Đóng</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveInspect">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            <span>Lưu Phiếu Track Sheet Ca</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: VIEW INSPECTION DETAIL & PRINT ================= -->
+  <div class="modal-overlay" id="inspectionDetailModal" style="display: none;">
+    <div class="modal-dialog modal-xl checksheet-modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 id="inspDetailModalTitle">📋 CHI TIẾT PHIẾU KIỂM TRA TRACK SHEET</h3>
+          <p id="inspDetailModalSubtitle">Thông tin kiểm tra chi tiết theo ca làm việc</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseInspectionDetailModal">&times;</button>
+      </div>
+
+      <div class="modal-body checksheet-modal-body">
+        <!-- Machine & Shift Meta Cards -->
+        <div class="checksheet-hero-card">
+          <div class="machine-meta-badge">
+            <span class="badge-code" id="dtlInspAssetCode">EQ-XXX</span>
+            <div class="machine-title-info">
+              <h4 id="dtlInspAssetName">Tên Thiết Bị</h4>
+              <span id="dtlInspAssetDept">Phân Xưởng</span>
+            </div>
+          </div>
+
+          <div class="shift-meta-inputs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+            <div class="meta-field">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); display: block;">Ngày & Giờ</span>
+              <strong id="dtlInspDate" style="color: var(--text-main); font-size: 0.95rem;">-</strong>
+            </div>
+            <div class="meta-field">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); display: block;">Ca Làm Việc</span>
+              <strong id="dtlInspShift" style="color: var(--text-main); font-size: 0.95rem;">-</strong>
+            </div>
+            <div class="meta-field">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); display: block;">Người Kiểm Tra</span>
+              <strong id="dtlInspInspector" style="color: var(--text-main); font-size: 0.95rem;">-</strong>
+            </div>
+            <div class="meta-field">
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); display: block;">Đánh Giá Chung</span>
+              <div id="dtlInspStatusPill" class="status-pill operational"><span class="stat-dot"></span> ĐẠT (PASS)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 Items Detail Table -->
+        <div class="checksheet-table-wrap" style="margin-top: 16px;">
+          <table class="checksheet-table">
+            <thead>
+              <tr>
+                <th class="col-stt">#</th>
+                <th class="col-name">Hạng Mục Kỹ Thuật Kiểm Tra</th>
+                <th class="col-standard">Tiêu Chuẩn Đạt Chuẩn</th>
+                <th class="col-method">Phương Pháp Kiểm Tra</th>
+                <th class="col-val">Giá Trị Đo Thực Tế</th>
+                <th class="col-res">Đánh Giá</th>
+                <th class="col-note">Ghi Chú</th>
+              </tr>
+            </thead>
+            <tbody id="dtlInspItemsTbody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Summary & Overall Notes -->
+        <div class="checksheet-summary-bar" style="margin-top: 16px;">
+          <div class="summary-stat-box">
+            <span class="label">KẾT QUẢ TỔNG HỢP:</span>
+            <div id="dtlInspScore" style="font-size: 1.05rem; font-weight: 700;">10 / 10 ĐẠT</div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label style="font-weight: 600; color: var(--text-main); font-size: 0.88rem;">Ý Kiến Bàn Giao & Ghi Chú Của Kỹ Thuật Viên</label>
+          <div id="dtlInspOverallNotes" style="padding: 12px 14px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; min-height: 48px;">
+            -
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btnPrintInspDetail">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span>In Phiếu Kiểm Tra</span>
+        </button>
+        <button type="button" class="btn btn-danger" id="btnDeleteFromInspDetail">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>Xóa Phiếu Này</span>
+        </button>
+        <button type="button" class="btn btn-secondary" id="btnCloseInspDetail">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: SELECT ASSET FOR NEW INSPECTION ================= -->
+  <div class="modal-overlay" id="selectAssetForInspectionModal" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>Chọn Máy Móc Để Lập Phiếu Check Sheet</h3>
+          <p>Chọn thiết bị trong xưởng cần kiểm tra kỹ thuật định kỳ / đầu ca</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseSelectAssetModal">&times;</button>
+      </div>
+
+      <form id="formSelectAssetForInspection" class="modal-body">
+        <div class="form-group">
+          <label for="selectAssetToInspectDropdown">Danh Sách Máy Móc Thiết Bị <span class="required">*</span></label>
+          <select id="selectAssetToInspectDropdown" class="form-control" required style="font-size: 0.95rem; padding: 10px;">
+            <!-- Injected via JS -->
+          </select>
+          <small class="form-hint" style="margin-top: 6px; display: block; color: var(--text-muted);">
+            Phiếu kiểm tra sẽ tự động nạp danh sách 10 hạng mục tiêu chuẩn của máy đã chọn.
+          </small>
+        </div>
+
+        <div class="modal-footer" style="padding: 16px 0 0 0;">
+          <button type="button" class="btn btn-secondary" id="btnCancelSelectAsset">Hủy</button>
+          <button type="submit" class="btn btn-primary">
+            <span>Tiếp Tục Lập Phiếu &rarr;</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/qrcode_util.js"></script>
+  <script src="js/sheet.js"></script>
+  <script src="js/maintenance.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/inspection_history.js"></script>
+  <script src="js/app.js"></script>
+  <!-- Mobile Bottom Navigation Bar (Smartphones & iPad) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <button class="bottom-nav-item active" data-view="dashboard-view" title="Tổng quan" onclick="switchView('dashboard-view')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Tổng Quan</span>
+    </button>
+    <button class="bottom-nav-item" data-view="sheet-view" title="Danh sách máy móc" onclick="switchView('sheet-view')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      <span>Thiết Bị</span>
+      <span class="bottom-nav-badge" id="mobBadgeTotal">0</span>
+    </button>
+    <div class="bottom-nav-fab-wrap">
+      <button class="bottom-nav-fab" id="mobBtnScanQR" title="Quét mã QR máy móc" onclick="if(window.handleOpenQuickQRModal) window.handleOpenQuickQRModal();">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><path d="M7 17h.01M17 17h.01M7 7h.01M17 7h.01"/></svg>
+      </button>
+    </div>
+    <button class="bottom-nav-item" data-view="maintenance-view" title="Lịch bảo dưỡng" onclick="switchView('maintenance-view')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>Bảo Trì</span>
+      <span class="bottom-nav-badge alert" id="mobBadgeDue">0</span>
+    </button>
+    <button class="bottom-nav-item" data-view="inspection-history-view" title="Nhật ký khám ca" onclick="switchView('inspection-history-view')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Khám Ca</span>
+      <span class="bottom-nav-badge" id="mobBadgeInsp">0</span>
+    </button>
+    <button class="bottom-nav-item" id="mobBtnSwitchUser" title="Chuyển đổi nhân sự / Đổi ca trực" onclick="if(window.authManager) window.authManager.openLoginModal();">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Chuyển Nhân</span>
+    </button>
+  </nav>
+
+
+  <!-- ================= MODAL: EDIT INSPECTION RECORD ================= -->
+  <div class="modal-overlay" id="editInspectionModal" style="display: none;">
+    <div class="modal-dialog modal-md">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>✏️ Chỉnh Sửa Phiếu Kiểm Tra Track Sheet</h3>
+          <p id="editInspModalSubtitle">Cập nhật thông tin phiếu kiểm tra ca máy</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseEditInspModal">&times;</button>
+      </div>
+
+      <form id="editInspectionForm" class="modal-body">
+        <input type="hidden" id="editInspId" value="">
+
+        <div class="form-group">
+          <label style="font-weight:600; font-size:0.85rem;">Thiết Bị / Máy Móc:</label>
+          <input type="text" id="editInspAssetDisplay" class="form-control" readonly style="background:rgba(255,255,255,0.06); font-weight:600; color:var(--text-main);">
+        </div>
+
+        <div class="form-row grid-2">
+          <div class="form-group">
+            <label for="editInspDate">Ngày Kiểm Tra <span class="required">*</span></label>
+            <input type="date" id="editInspDate" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="editInspTime">Giờ Kiểm Tra <span class="required">*</span></label>
+            <input type="time" id="editInspTime" required class="form-control">
+          </div>
+        </div>
+
+        <div class="form-row grid-2">
+          <div class="form-group">
+            <label for="editInspShift">Ca Làm Việc <span class="required">*</span></label>
+            <select id="editInspShift" required class="form-control">
+              <option value="Ca 1 (06:00 - 14:00)">Ca 1 (06:00 - 14:00)</option>
+              <option value="Ca 2 (14:00 - 22:00)">Ca 2 (14:00 - 22:00)</option>
+              <option value="Ca 3 (22:00 - 06:00)">Ca 3 (22:00 - 06:00)</option>
+              <option value="Ca Hành Chính">Ca Hành Chính</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editInspStatus">Kết Quả Đánh Giá <span class="required">*</span></label>
+            <select id="editInspStatus" required class="form-control">
+              <option value="PASS">✅ ĐẠT (PASS) - Đủ điều kiện vận hành</option>
+              <option value="FAIL">🚨 CẢNH BÁO (FAIL/NG) - Có hạng mục bất thường</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editInspInspector">Người Kiểm Tra (PIC) <span class="required">*</span></label>
+          <input type="text" id="editInspInspector" required class="form-control" placeholder="Tên kỹ thuật viên / công nhân vận hành">
+        </div>
+
+        <div class="form-group">
+          <label for="editInspNotes">Ghi Chú Đánh Giá / Khuyến Nghị:</label>
+          <textarea id="editInspNotes" class="form-control" rows="3" placeholder="Nhập tình trạng máy, ghi chú đo đạc hoặc lý do cảnh báo..."></textarea>
+        </div>
+
+        <div class="modal-footer" style="padding: 14px 0 0 0; margin-top: 10px; display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn-secondary" id="btnCancelEditInsp">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveEditInsp">Lưu Thay Đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: QUICK CHANGE ASSET STATUS ================= -->
+  <div class="modal-overlay" id="quickChangeStatusModal" style="display: none; z-index: 10005;">
+    <div class="modal-dialog modal-md" style="max-width: 540px;">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3>⚡ Chuyển Trạng Thái Thiết Bị</h3>
+          <p id="quickStatusModalSubtitle">Cập nhật nhanh tình trạng hoạt động, bảo trì hoặc sự cố máy</p>
+        </div>
+        <button class="modal-close-btn" id="btnCloseQuickStatusModal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="quickStatusAssetId" value="">
+
+        <!-- Current Asset Banner -->
+        <div class="quick-status-asset-banner">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span class="asset-code-badge" id="quickStatusAssetCode" style="font-size: 0.95rem;">EQ-XXX</span>
+            <div id="quickStatusCurrentPillWrap">
+              <span class="status-pill operational" id="quickStatusCurrentPill"><span class="stat-dot"></span> Đang hoạt động</span>
+            </div>
+          </div>
+          <h4 id="quickStatusAssetName" style="margin: 0 0 4px 0; font-size: 1.05rem; color: var(--text-main);">Tên Thiết Bị</h4>
+          <div id="quickStatusAssetMeta" style="font-size: 0.8rem; color: var(--text-muted);">Phân xưởng Cơ Khí &bull; Line 1</div>
+        </div>
+
+        <div style="margin: 16px 0 8px 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main);">
+          Chọn trạng thái mới muốn chuyển:
+        </div>
+
+        <!-- 3 Interactive Big Status Option Cards -->
+        <div class="quick-status-options-grid">
+          <!-- Option: Operational -->
+          <div class="quick-status-card opt-operational" data-status="operational" onclick="window.selectQuickStatus('operational')">
+            <div class="status-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="status-card-content">
+              <div class="status-card-title">ĐANG HOẠT ĐỘNG</div>
+              <div class="status-card-desc">Máy sẵn sàng chạy sản xuất, đã kiểm tra đạt tiêu chuẩn</div>
+            </div>
+            <div class="status-card-radio">
+              <input type="radio" name="quickStatusRadio" value="operational" id="radioStatusOperational">
+            </div>
+          </div>
+
+          <!-- Option: Maintenance -->
+          <div class="quick-status-card opt-maintenance" data-status="maintenance" onclick="window.selectQuickStatus('maintenance')">
+            <div class="status-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <div class="status-card-content">
+              <div class="status-card-title">BẢO TRÌ / BẢO DƯỠNG</div>
+              <div class="status-card-desc">Dừng máy để bảo dưỡng định kỳ, sửa chữa thay thế linh kiện</div>
+            </div>
+            <div class="status-card-radio">
+              <input type="radio" name="quickStatusRadio" value="maintenance" id="radioStatusMaintenance">
+            </div>
+          </div>
+
+          <!-- Option: Down (Breakdown) -->
+          <div class="quick-status-card opt-down" data-status="down" onclick="window.selectQuickStatus('down')">
+            <div class="status-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="status-card-content">
+              <div class="status-card-title">SỰ CỐ DỪNG MÁY</div>
+              <div class="status-card-desc">Cảnh báo khẩn: Máy gặp sự cố hư hỏng, dừng chuyền khẩn cấp</div>
+            </div>
+            <div class="status-card-radio">
+              <input type="radio" name="quickStatusRadio" value="down" id="radioStatusDown">
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional Reason / Note -->
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="quickStatusNote" style="font-weight: 600; font-size: 0.85rem;">Lý do / Ghi chú chuyển trạng thái:</label>
+          <input type="text" id="quickStatusNote" class="form-control" placeholder="Ví dụ: Dừng bảo dưỡng thay dầu; Sự cố kẹt phôi trục chính; Đã sửa xong nghiệm thu...">
+        </div>
+
+        <!-- Auto Log Checkbox -->
+        <div style="margin-top: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+            <input type="checkbox" id="quickStatusAutoLog" checked style="cursor: pointer;">
+            <span>Tự động lưu 1 bản ghi vào Lịch Sử Bảo Dưỡng / Sự Cố</span>
+          </label>
+        </div>
+
+        <div class="modal-footer" style="padding: 16px 0 0 0; margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" id="btnCancelQuickStatus">Đóng</button>
+          <button type="button" class="btn btn-primary" id="btnSaveQuickStatus">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Xác Nhận Chuyển Trạng Thái</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Printable Container for Bulk Reports (Hidden on screen, visible on print) -->
+  <div id="printableBatchContainer" style="display: none;"></div>
+
+</body>
+</html>
